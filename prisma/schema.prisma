@@ -1,0 +1,462 @@
+// Generator: prisma generate
+// Migration: prisma migrate dev
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================
+// PROFIL PENGGUNA — extend auth.users Supabase
+// ============================================================
+model Profile {
+  id                   String    @id @db.Uuid
+  username             String    @unique @db.VarChar(30)
+  fullName             String?   @map("full_name") @db.VarChar(100)
+  school               String?   @db.VarChar(150)
+  city                 String?   @db.VarChar(100)
+  targetUniversity     String?   @map("target_university") @db.VarChar(150)
+  targetMajor          String?   @map("target_major") @db.VarChar(150)
+  targetProdiId        Int?      @map("target_prodi_id")
+  avatarUrl            String?   @map("avatar_url")
+  xp                   Int       @default(0)
+  level                Int       @default(1)
+  streakCurrent        Int       @default(0) @map("streak_current")
+  streakLongest        Int       @default(0) @map("streak_longest")
+  streakLastDate       DateTime? @map("streak_last_date") @db.Date
+  subscriptionTier     String    @default("free") @map("subscription_tier") @db.VarChar(20)
+  subscriptionExpiresAt DateTime? @map("subscription_expires_at") @db.Timestamptz()
+  referralCode         String?   @unique @map("referral_code") @db.VarChar(20)
+  referredById         String?   @map("referred_by_id") @db.Uuid
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+
+  // Relasi
+  sesiLatihan      SesiLatihan[]
+  jawabanUser      JawabanUser[]
+  transaksi        Transaksi[]
+  userBadges       UserBadge[]
+  targetProdi      ProdiPTN?        @relation(fields: [targetProdiId], references: [id])
+  referredBy       Profile?         @relation("ReferralTree", fields: [referredById], references: [id])
+  referrals        Profile[]        @relation("ReferralTree")
+  komentarSoal     KomentarSoal[]
+  komentarVotes    KomentarVote[]
+  eventPeserta     EventPeserta[]
+  referralGiven    ReferralReward[] @relation("ReferralGiven")
+  referralReceived ReferralReward[] @relation("ReferralReceived")
+
+  @@map("profiles")
+}
+
+// ============================================================
+// MATA PELAJARAN
+// ============================================================
+model MataPelajaran {
+  id          Int     @id @default(autoincrement())
+  kode        String  @unique @db.VarChar(10)
+  nama        String  @db.VarChar(100)
+  deskripsi   String?
+  icon        String? @db.VarChar(50)
+  warna       String? @db.VarChar(7)
+
+  topik           Topik[]
+  sesiLatihan     SesiLatihan[]
+  subSesiLatihan  SubSesiLatihan[]
+
+  @@map("mata_pelajaran")
+}
+
+// ============================================================
+// TOPIK / SUB-MATERI
+// ============================================================
+model Topik {
+  id        Int           @id @default(autoincrement())
+  mapelId   Int           @map("mapel_id")
+  nama      String        @db.VarChar(150)
+  slug      String        @unique @db.VarChar(150)
+  deskripsi String?
+  urutan    Int           @default(0)
+
+  mapel        MataPelajaran @relation(fields: [mapelId], references: [id])
+  soal         Soal[]
+  materiModul  MateriModul[]
+
+  @@map("topik")
+}
+
+// ============================================================
+// SOAL — Inti utama platform (+ IRT parameters)
+// ============================================================
+model Soal {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  topikId             Int       @map("topik_id")
+  konten              String    // Teks soal, mendukung LaTeX $...$
+  kontenHtml          String?   @map("konten_html")
+  gambarUrl           String?   @map("gambar_url")
+  tipe                String    @default("pilgan") @db.VarChar(20)
+  tingkatKesulitan    Int       @map("tingkat_kesulitan")
+  tahun               Int?
+  sumber              String?   @db.VarChar(100)
+  hasVisualExplanation Boolean  @default(false) @map("has_visual_explanation")
+  isPremium           Boolean   @default(false) @map("is_premium")
+  isActive            Boolean   @default(true) @map("is_active")
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+
+  // IRT Parameters (Feature 1)
+  irtDifficulty       Float?    @map("irt_difficulty")
+  irtDiscrimination   Float?    @map("irt_discrimination")
+  irtGuessing         Float?    @map("irt_guessing")
+  irtLastCalculated   DateTime? @map("irt_last_calculated") @db.Timestamptz()
+
+  topik               Topik         @relation(fields: [topikId], references: [id])
+  pilihanJawaban      PilihanJawaban[]
+  pembahasan          Pembahasan?
+  jawabanUser         JawabanUser[]
+  komentarSoal        KomentarSoal[]
+
+  @@map("soal")
+}
+
+// ============================================================
+// PILIHAN JAWABAN
+// ============================================================
+model PilihanJawaban {
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  soalId     String  @map("soal_id") @db.Uuid
+  label      String  @db.Char(1)
+  konten     String
+  kontenHtml String? @map("konten_html")
+  isCorrect  Boolean @default(false) @map("is_correct")
+  urutan     Int
+
+  soal       Soal    @relation(fields: [soalId], references: [id], onDelete: Cascade)
+
+  @@map("pilihan_jawaban")
+}
+
+// ============================================================
+// PEMBAHASAN — Dengan visual interaktif D3.js
+// ============================================================
+model Pembahasan {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  soalId        String   @unique @map("soal_id") @db.Uuid
+  kontenTeks    String   @map("konten_teks")
+  kontenHtml    String?  @map("konten_html")
+  tipeVisual    String?  @map("tipe_visual") @db.VarChar(30)
+  visualConfig  Json?    @map("visual_config")
+  videoUrl      String?  @map("video_url")
+  poinPenting   String[] @map("poin_penting")
+  rumusTerkait  String[] @map("rumus_terkait")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  soal          Soal     @relation(fields: [soalId], references: [id], onDelete: Cascade)
+
+  @@map("pembahasan")
+}
+
+// ============================================================
+// SESI LATIHAN
+// ============================================================
+model SesiLatihan {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  tipe          String    @db.VarChar(20)
+  mapelId       Int?      @map("mapel_id")
+  topikIds      Int[]     @map("topik_ids")
+  totalSoal     Int       @map("total_soal")
+  soalBenar     Int       @default(0) @map("soal_benar")
+  soalSalah     Int       @default(0) @map("soal_salah")
+  soalSkip      Int       @default(0) @map("soal_skip")
+  waktuMulai    DateTime  @default(now()) @map("waktu_mulai") @db.Timestamptz()
+  waktuSelesai  DateTime? @map("waktu_selesai") @db.Timestamptz()
+  durasiDetik   Int?      @map("durasi_detik")
+  xpEarned      Int       @default(0) @map("xp_earned")
+  isSelesai     Boolean   @default(false) @map("is_selesai")
+
+  user           Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mapel          MataPelajaran?   @relation(fields: [mapelId], references: [id])
+  jawabanUser    JawabanUser[]
+  subSesi        SubSesiLatihan[]
+  eventPeserta   EventPeserta[]
+
+  @@map("sesi_latihan")
+}
+
+// ============================================================
+// JAWABAN USER
+// ============================================================
+model JawabanUser {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sesiId             String   @map("sesi_id") @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  soalId             String   @map("soal_id") @db.Uuid
+  jawabanDipilih     String?  @map("jawaban_dipilih") @db.Char(1)
+  isCorrect          Boolean? @map("is_correct")
+  waktuMenjawabDetik Int?     @map("waktu_menjawab_detik")
+  isBookmarked       Boolean  @default(false) @map("is_bookmarked")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  sesi               SesiLatihan @relation(fields: [sesiId], references: [id], onDelete: Cascade)
+  user               Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  soal               Soal        @relation(fields: [soalId], references: [id])
+
+  @@map("jawaban_user")
+}
+
+// ============================================================
+// BADGES — Sistem Gamifikasi
+// ============================================================
+model Badge {
+  id        Int     @id @default(autoincrement())
+  kode      String  @unique @db.VarChar(50)
+  nama      String  @db.VarChar(100)
+  deskripsi String?
+  icon      String? @db.VarChar(50)
+  warna     String? @db.VarChar(7)
+  xpReward  Int     @default(0) @map("xp_reward")
+  kondisi   Json
+
+  userBadges UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  userId   String   @map("user_id") @db.Uuid
+  badgeId  Int      @map("badge_id")
+  earnedAt DateTime @default(now()) @map("earned_at") @db.Timestamptz()
+
+  user     Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge    Badge    @relation(fields: [badgeId], references: [id])
+
+  @@id([userId, badgeId])
+  @@map("user_badges")
+}
+
+// ============================================================
+// TRANSAKSI — Midtrans Payment
+// ============================================================
+model Transaksi {
+  id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId                String   @map("user_id") @db.Uuid
+  midtransOrderId       String   @unique @map("midtrans_order_id") @db.VarChar(100)
+  midtransTransactionId String?  @map("midtrans_transaction_id") @db.VarChar(100)
+  paket                 String   @db.VarChar(20)
+  nominal               Int
+  status                String   @default("pending") @db.VarChar(20)
+  metodeBayar           String?  @map("metode_bayar") @db.VarChar(50)
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt             DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  user                  Profile  @relation(fields: [userId], references: [id])
+
+  @@map("transaksi")
+}
+
+// ============================================================
+// FEATURE 1: IRT CALCULATION LOG
+// ============================================================
+model IrtCalculationLog {
+  id              Int      @id @default(autoincrement())
+  totalSoal       Int      @map("total_soal")
+  totalResponses  Int      @map("total_responses")
+  avgDifficulty   Float    @map("avg_difficulty")
+  calculatedAt    DateTime @default(now()) @map("calculated_at") @db.Timestamptz()
+  durationMs      Int      @map("duration_ms")
+
+  @@map("irt_calculation_log")
+}
+
+// ============================================================
+// FEATURE 2: PTN MASTER DATA — Universitas & Program Studi
+// ============================================================
+model UniversitasPTN {
+  id          Int       @id @default(autoincrement())
+  kode        String    @unique @db.VarChar(20)
+  nama        String    @db.VarChar(200)
+  singkatan   String    @db.VarChar(20)
+  kota        String    @db.VarChar(100)
+  logoUrl     String?   @map("logo_url")
+
+  prodi       ProdiPTN[]
+
+  @@map("universitas_ptn")
+}
+
+model ProdiPTN {
+  id              Int             @id @default(autoincrement())
+  univId          Int             @map("univ_id")
+  kode            String          @db.VarChar(20)
+  nama            String          @db.VarChar(200)
+  jenjang         String          @default("S1") @db.VarChar(5)
+  rumpun          String          @db.VarChar(50)
+  dayaTampung     Int             @map("daya_tampung")
+  passingGrade    Float           @map("passing_grade")
+  tahunData       Int             @default(2025) @map("tahun_data")
+
+  univ            UniversitasPTN  @relation(fields: [univId], references: [id])
+  profiles        Profile[]
+
+  @@unique([univId, kode])
+  @@map("prodi_ptn")
+}
+
+// ============================================================
+// FEATURE 3: BLOCK TIMING — Sub-sesi per subtest
+// ============================================================
+model SubSesiLatihan {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sesiId          String        @map("sesi_id") @db.Uuid
+  mapelId         Int           @map("mapel_id")
+  urutan          Int
+  durasiMaksDetik Int           @map("durasi_maks_detik")
+  waktuMulai      DateTime?     @map("waktu_mulai") @db.Timestamptz()
+  waktuSelesai    DateTime?     @map("waktu_selesai") @db.Timestamptz()
+  durasiDetik     Int?          @map("durasi_detik")
+  soalBenar       Int           @default(0) @map("soal_benar")
+  soalSalah       Int           @default(0) @map("soal_salah")
+  soalSkip        Int           @default(0) @map("soal_skip")
+  isCompleted     Boolean       @default(false) @map("is_completed")
+
+  sesi            SesiLatihan   @relation(fields: [sesiId], references: [id], onDelete: Cascade)
+  mapel           MataPelajaran @relation(fields: [mapelId], references: [id])
+
+  @@map("sub_sesi_latihan")
+}
+
+// ============================================================
+// FEATURE 4: GRAND TRYOUT EVENTS
+// ============================================================
+model EventTryout {
+  id               String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nama             String          @db.VarChar(200)
+  deskripsi        String?
+  bannerUrl        String?         @map("banner_url")
+  startDate        DateTime        @map("start_date") @db.Timestamptz()
+  endDate          DateTime        @map("end_date") @db.Timestamptz()
+  scoreReleaseAt   DateTime?       @map("score_release_at") @db.Timestamptz()
+  isScorePublished Boolean         @default(false) @map("is_score_published")
+  isPro            Boolean         @default(false) @map("is_pro")
+  maxPeserta       Int?            @map("max_peserta")
+  totalSoal        Int             @map("total_soal")
+  durasiMenit      Int             @map("durasi_menit")
+  createdAt        DateTime        @default(now()) @map("created_at") @db.Timestamptz()
+
+  peserta          EventPeserta[]
+
+  @@map("event_tryout")
+}
+
+model EventPeserta {
+  id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId      String       @map("event_id") @db.Uuid
+  userId       String       @map("user_id") @db.Uuid
+  sesiId       String?      @map("sesi_id") @db.Uuid
+  skorIrt      Float?       @map("skor_irt")
+  peringkat    Int?
+  registeredAt DateTime     @default(now()) @map("registered_at") @db.Timestamptz()
+
+  event        EventTryout  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user         Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sesi         SesiLatihan? @relation(fields: [sesiId], references: [id])
+
+  @@unique([eventId, userId])
+  @@map("event_peserta")
+}
+
+// ============================================================
+// FEATURE 5: LEARNING MATERIALS — Modul & Konten Materi
+// ============================================================
+model MateriModul {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  topikId      Int           @map("topik_id")
+  judul        String        @db.VarChar(200)
+  slug         String        @unique @db.VarChar(200)
+  deskripsi    String?
+  thumbnailUrl String?       @map("thumbnail_url")
+  isPremium    Boolean       @default(false) @map("is_premium")
+  urutan       Int           @default(0)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
+
+  topik        Topik         @relation(fields: [topikId], references: [id])
+  konten       MateriKonten[]
+
+  @@map("materi_modul")
+}
+
+model MateriKonten {
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  modulId     String       @map("modul_id") @db.Uuid
+  tipe        String       @db.VarChar(20)
+  judul       String       @db.VarChar(200)
+  konten      String?
+  kontenHtml  String?      @map("konten_html")
+  videoUrl    String?      @map("video_url")
+  fileUrl     String?      @map("file_url")
+  durasiMenit Int?         @map("durasi_menit")
+  urutan      Int          @default(0)
+
+  modul       MateriModul  @relation(fields: [modulId], references: [id], onDelete: Cascade)
+
+  @@map("materi_konten")
+}
+
+// ============================================================
+// FEATURE 6: QUESTION COMMENTS — Diskusi per soal
+// ============================================================
+model KomentarSoal {
+  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  soalId      String         @map("soal_id") @db.Uuid
+  userId      String         @map("user_id") @db.Uuid
+  parentId    String?        @map("parent_id") @db.Uuid
+  konten      String
+  upvotes     Int            @default(0)
+  downvotes   Int            @default(0)
+  isEdited    Boolean        @default(false) @map("is_edited")
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz()
+
+  soal        Soal           @relation(fields: [soalId], references: [id], onDelete: Cascade)
+  user        Profile        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent      KomentarSoal?  @relation("KomentarThread", fields: [parentId], references: [id])
+  replies     KomentarSoal[] @relation("KomentarThread")
+  votes       KomentarVote[]
+
+  @@map("komentar_soal")
+}
+
+model KomentarVote {
+  userId      String       @map("user_id") @db.Uuid
+  komentarId  String       @map("komentar_id") @db.Uuid
+  value       Int
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz()
+
+  user        Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  komentar    KomentarSoal @relation(fields: [komentarId], references: [id], onDelete: Cascade)
+
+  @@id([userId, komentarId])
+  @@map("komentar_vote")
+}
+
+// ============================================================
+// FEATURE 7: REFERRAL SYSTEM
+// ============================================================
+model ReferralReward {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  referrerId      String   @map("referrer_id") @db.Uuid
+  referredId      String   @map("referred_id") @db.Uuid
+  tipe            String   @db.VarChar(20)
+  nilai           Int
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  referrer        Profile  @relation("ReferralGiven", fields: [referrerId], references: [id])
+  referred        Profile  @relation("ReferralReceived", fields: [referredId], references: [id])
+
+  @@map("referral_reward")
+}
