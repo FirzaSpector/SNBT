@@ -16,9 +16,9 @@ import { MathRenderer } from "@/components/question/MathRenderer";
 export default async function HasilLatihanPage({
   params,
 }: {
-  params: Promise<{ sesiId: string }>;
+  params: { sesiId: string };
 }) {
-  const { sesiId } = await params;
+  const { sesiId } = params;
 
   const supabase = await createClient();
   const {

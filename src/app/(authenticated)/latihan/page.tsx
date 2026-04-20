@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 interface LatihanPageProps {
-  searchParams: Promise<{ mapel?: string }>;
+  searchParams: { mapel?: string };
 }
 
 export default async function LatihanPage({ searchParams }: LatihanPageProps) {
@@ -19,7 +19,7 @@ export default async function LatihanPage({ searchParams }: LatihanPageProps) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { mapel: selectedMapel } = await searchParams;
+  const { mapel: selectedMapel } = searchParams;
 
   // Ambil semua mata pelajaran dengan jumlah soal tersedia
   const mapelList = await prisma.mataPelajaran.findMany({

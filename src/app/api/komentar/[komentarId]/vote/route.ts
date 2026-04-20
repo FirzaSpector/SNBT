@@ -9,10 +9,10 @@ import { createClient } from "@/lib/supabase/server";
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ komentarId: string }> }
+  { params }: { params: { komentarId: string } }
 ) {
   try {
-    const { komentarId } = await params;
+    const { komentarId } = params;
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {

@@ -6,11 +6,11 @@ import { ArrowLeft, BookOpen, FileText, Play, Download, Clock, ChevronRight } fr
 import type { Metadata } from "next";
 
 interface ModulPageProps {
-  params: Promise<{ modulId: string }>;
+  params: { modulId: string };
 }
 
 export async function generateMetadata({ params }: ModulPageProps): Promise<Metadata> {
-  const { modulId } = await params;
+  const { modulId } = params;
   const modul = await prisma.materiModul.findUnique({
     where: { id: modulId },
     select: { judul: true, deskripsi: true },
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: ModulPageProps): Promise<Meta
 }
 
 export default async function ModulDetailPage({ params }: ModulPageProps) {
-  const { modulId } = await params;
+  const { modulId } = params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");

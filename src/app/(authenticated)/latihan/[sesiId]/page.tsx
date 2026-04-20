@@ -6,9 +6,9 @@ import { LatihanSession } from "@/components/question/LatihanSession";
 export default async function LatihanSesiPage({
   params,
 }: {
-  params: Promise<{ sesiId: string }>;
+  params: { sesiId: string };
 }) {
-  const { sesiId } = await params;
+  const { sesiId } = params;
   
   const supabase = await createClient();
   const {

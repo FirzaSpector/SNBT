@@ -5,9 +5,9 @@ import { prisma } from "@/lib/prisma";
 export default async function MulaiLatihanPage({
   searchParams,
 }: {
-  searchParams: Promise<{ mapelId?: string; topikId?: string }>;
+  searchParams: { mapelId?: string; topikId?: string };
 }) {
-  const params = await searchParams;
+  const params = searchParams;
   const mapelId = params.mapelId ? parseInt(params.mapelId, 10) : undefined;
   const topikId = params.topikId ? parseInt(params.topikId, 10) : undefined;
 

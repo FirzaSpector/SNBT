@@ -7,10 +7,10 @@ import { prisma } from "@/lib/prisma";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ modulId: string }> }
+  { params }: { params: { modulId: string } }
 ) {
   try {
-    const { modulId } = await params;
+    const { modulId } = params;
 
     const modul = await prisma.materiModul.findUnique({
       where: { id: modulId },

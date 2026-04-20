@@ -8,10 +8,10 @@ import { createClient } from "@/lib/supabase/server";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ eventId: string }> }
+  { params }: { params: { eventId: string } }
 ) {
   try {
-    const { eventId } = await params;
+    const { eventId } = params;
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
