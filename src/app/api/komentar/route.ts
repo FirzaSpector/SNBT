@@ -3,6 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
+export const dynamic = "force-dynamic";
+
+const createCommentSchema = z.object({
+  soalId: z.string().uuid(),
+  konten: z.string().min(1, "Komentar tidak boleh kosong").max(2000, "Maksimal 2000 karakter"),
+  parentId: z.string().uuid().optional().nullable(),
+});
+
 /**
  * GET /api/komentar?soalId=xxx
  * Returns comments for a question, ordered by votes.
@@ -55,22 +63,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { soalId, konten, parentId } = await request.json();
-    
-    // Zod validation
-    const schema = z.object({
-      soalId: z.string().uuid(),
-      konten: z.string().min(1, "Komentar tidak boleh kosong").max(2000, "Maksimal 2000 karakter"),
-      parentId: z.string().uuid().optional().nullable(),
-    });
-
-    const parsed = schema.safeParse({ soalId, konten, parentId });
+    const rawBody = await request.json() as unknown;
+    const parsed = createCommentSchema.safeParse(rawBody);
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Invalid input", details: parsed.error.issues },
+        { error: "Input tidak valid", details: parsed.error.issues },
         { status: 400 }
       );
     }
+    const { soalId, konten, parentId } = parsed.data;
 
     const comment = await prisma.komentarSoal.create({
       data: {

@@ -19,8 +19,8 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
-  // Ambil data paralel: profil + statistik latihan 7 hari terakhir + badge terbaru
-  const [profile, recentSessions, earnedBadges, mapelList] = await Promise.all([
+  // Ambil data paralel: profil + statistik latihan 7 hari terakhir + badge terbaru + stats
+  const [profile, recentSessions, earnedBadges, mapelList, totalSoalDikerjakan, totalSoalBenar] = await Promise.all([
     prisma.profile.findUnique({ where: { id: user.id } }),
 
     // Sesi 7 hari terakhir untuk chart tren harian
@@ -53,7 +53,7 @@ export default async function DashboardPage() {
       take: 3,
     }),
 
-    // Semua mata pelajaran dengan jumlah soal
+    // Semua mata pelajaran dengan jumlah topik
     prisma.mataPelajaran.findMany({
       include: {
         _count: {
@@ -62,18 +62,19 @@ export default async function DashboardPage() {
       },
       orderBy: { id: "asc" },
     }),
+
+    // Total soal dikerjakan (parallel, bukan sequential)
+    prisma.jawabanUser.count({
+      where: { userId: user.id },
+    }),
+
+    // Total soal benar (parallel, bukan sequential)
+    prisma.jawabanUser.count({
+      where: { userId: user.id, isCorrect: true },
+    }),
   ]);
 
   if (!profile) redirect("/setup-profil");
-
-  // Hitung total statistik
-  const totalSoalDikerjakan = await prisma.jawabanUser.count({
-    where: { userId: user.id },
-  });
-
-  const totalSoalBenar = await prisma.jawabanUser.count({
-    where: { userId: user.id, isCorrect: true },
-  });
 
   return (
     <Suspense fallback={<DashboardSkeleton />}>

@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
+import { z } from "zod";
+
+export const dynamic = "force-dynamic";
+
+const applyReferralSchema = z.object({
+  code: z.string().min(1, "Kode referral wajib diisi").max(20),
+});
 
 /**
  * GET /api/referral
@@ -89,10 +96,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { code } = await request.json();
-    if (!code) {
-      return NextResponse.json({ error: "Referral code is required" }, { status: 400 });
+    const rawBody = await request.json() as unknown;
+    const parsed = applyReferralSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Input tidak valid", details: parsed.error.issues },
+        { status: 400 }
+      );
     }
+    const { code } = parsed.data;
 
     // Check if user already has a referrer
     const currentProfile = await prisma.profile.findUnique({

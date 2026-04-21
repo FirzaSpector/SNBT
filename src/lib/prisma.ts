@@ -1,13 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 
-// Singleton pattern untuk Prisma Client
-// Mencegah multiple connections di development dengan hot-reload Next.js
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
+/**
+ * Singleton pattern untuk Prisma Client.
+ * Mencegah multiple connections di development dengan hot-reload Next.js.
+ *
+ * Menggunakan `declare global` untuk type safety tanpa `as unknown`.
+ */
 
-export const prisma =
-  globalForPrisma.prisma ??
+declare global {
+  // eslint-disable-next-line no-var
+  var __prismaClient: PrismaClient | undefined;
+}
+
+export const prisma: PrismaClient =
+  globalThis.__prismaClient ??
   new PrismaClient({
     log:
       process.env.NODE_ENV === "development"
@@ -16,5 +22,5 @@ export const prisma =
   });
 
 if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  globalThis.__prismaClient = prisma;
 }

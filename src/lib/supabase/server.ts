@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { env } from "@/lib/env";
 
 /**
  * Supabase client untuk sisi server (Server Components, Server Actions, Route Handlers).
@@ -9,8 +10,8 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {
@@ -35,11 +36,20 @@ export async function createClient() {
  * Supabase admin client menggunakan service role key.
  * HANYA untuk Route Handlers yang membutuhkan akses penuh (bypass RLS).
  * JANGAN gunakan di client-side code!
+ *
+ * @throws Error jika SUPABASE_SERVICE_ROLE_KEY tidak dikonfigurasi
  */
 export function createAdminClient() {
+  const serviceRoleKey = env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceRoleKey) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY tidak dikonfigurasi. Admin client tidak tersedia."
+    );
+  }
+
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    serviceRoleKey,
     {
       cookies: {
         getAll: () => [],

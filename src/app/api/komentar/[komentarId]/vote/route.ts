@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
+import { z } from "zod";
+
+export const dynamic = "force-dynamic";
+
+const voteSchema = z.object({
+  value: z.union([z.literal(1), z.literal(-1)], {
+    errorMap: () => ({ message: "Value harus 1 atau -1" }),
+  }),
+});
 
 /**
  * POST /api/komentar/[komentarId]/vote
@@ -19,10 +28,15 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { value } = await request.json();
-    if (value !== 1 && value !== -1) {
-      return NextResponse.json({ error: "Value must be 1 or -1" }, { status: 400 });
+    const rawBody = await request.json() as unknown;
+    const parsed = voteSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Input tidak valid", details: parsed.error.issues },
+        { status: 400 }
+      );
     }
+    const { value } = parsed.data;
 
     // Check if user already voted
     const existingVote = await prisma.komentarVote.findUnique({

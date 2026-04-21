@@ -163,36 +163,7 @@ export function DashboardClient({
 
   return (
     <>
-      {/* ═══ Animation keyframes (self-contained, no framer-motion needed) ═══ */}
-      <style jsx global>{`
-        @keyframes dashSlideUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to   { opacity: 1; transform: translateY(0);    }
-        }
-        @keyframes dashScaleIn {
-          from { opacity: 0; transform: scale(0.92); }
-          to   { opacity: 1; transform: scale(1);    }
-        }
-        @keyframes dashFadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
-        .dash-slide { animation: dashSlideUp 0.55s cubic-bezier(.22,1,.36,1) both; }
-        .dash-scale { animation: dashScaleIn 0.45s cubic-bezier(.22,1,.36,1) both; }
-        .dash-fade  { animation: dashFadeIn 0.5s ease-out both; }
-        .dd0 { animation-delay: 0ms;   }
-        .dd1 { animation-delay: 60ms;  }
-        .dd2 { animation-delay: 120ms; }
-        .dd3 { animation-delay: 180ms; }
-        .dd4 { animation-delay: 240ms; }
-        .dd5 { animation-delay: 300ms; }
-        .dd6 { animation-delay: 360ms; }
-        .dd7 { animation-delay: 420ms; }
-        .dd8 { animation-delay: 480ms; }
-        .dd9 { animation-delay: 540ms; }
-        .hide-scroll::-webkit-scrollbar { display: none; }
-        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
+      {/* Animations are defined in globals.css (dash-slide, dash-scale, dash-fade, dd0-dd9) */}
 
       <div
         className="min-h-screen pb-8"

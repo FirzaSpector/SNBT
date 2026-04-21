@@ -2,14 +2,19 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { LatihanSession } from "@/components/question/LatihanSession";
+import type { Soal, PilihanJawaban, Pembahasan } from "@/types";
 
+/**
+ * Halaman sesi latihan aktif.
+ * Mengambil soal dan data sesi, lalu render LatihanSession.
+ */
 export default async function LatihanSesiPage({
   params,
 }: {
   params: { sesiId: string };
 }) {
   const { sesiId } = params;
-  
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -19,7 +24,7 @@ export default async function LatihanSesiPage({
     redirect("/login");
   }
 
-  // Ambil sesi beserta jawabannya (yang isinya referensi ke soal)
+  // Ambil sesi beserta jawabannya
   const sesi = await prisma.sesiLatihan.findUnique({
     where: {
       id: sesiId,
@@ -38,28 +43,21 @@ export default async function LatihanSesiPage({
           },
         },
         orderBy: {
-          createdAt: "asc", 
+          createdAt: "asc",
         },
       },
     },
   });
 
   if (!sesi) {
-    // Sesi tidak ditemukan atau bukan milik user ini
     redirect("/latihan");
   }
 
   if (sesi.isSelesai) {
-    // Jika sesi sudah selesai, redirect ke halaman hasil
     redirect(`/latihan/${sesiId}/hasil`);
   }
 
-  // Transform data dari `jawabanUser` ke format `SoalCBT[]`
-  // Di sini jawabanUser sudah di-generate pada saat `mulai` (ideal). 
-  // Jika soal belum ada di jawabanUser, kita perlu fetching berdasar topikIds, mapelId - tapi API /api/latihan/mulai seharusnya menghubungkan hal ini.
-  
-  // Karena saat ini API '/api/latihan/mulai' belum memasukkan dummy jawabanUser, 
-  // kita lakukan query soal berdasar topikIds sesi ini.
+  // Query soal berdasar topikIds / mapelId sesi
   const soalList = await prisma.soal.findMany({
     where: {
       isActive: true,
@@ -75,19 +73,47 @@ export default async function LatihanSesiPage({
     take: sesi.totalSoal > 0 ? sesi.totalSoal : 20,
   });
 
-  // Map untuk LatihanSession (biarkan LatihanSession yang akan menambahkan state `status`, dll via useState, 
-  // kalau mau implement resume, LatihanSession perlu modifikasi, tapi untuk sekarang kita lewatkan soal-soal ini)
-  
-  // Jika tidak ada soal, redirect kembali
   if (soalList.length === 0) {
     redirect("/latihan?error=no_questions");
   }
 
+  // Transform Prisma result to match the Soal & PilihanJawaban interface
+  // This avoids `as any` by explicitly mapping the types
+  const typedSoalList: Array<Soal & { pilihanJawaban: PilihanJawaban[] }> = soalList.map((soal) => ({
+    id: soal.id,
+    topikId: soal.topikId,
+    konten: soal.konten,
+    kontenHtml: soal.kontenHtml,
+    gambarUrl: soal.gambarUrl,
+    tipe: soal.tipe as Soal["tipe"],
+    tingkatKesulitan: soal.tingkatKesulitan as Soal["tingkatKesulitan"],
+    tahun: soal.tahun,
+    sumber: soal.sumber,
+    hasVisualExplanation: soal.hasVisualExplanation,
+    isPremium: soal.isPremium,
+    isActive: soal.isActive,
+    createdAt: soal.createdAt,
+    irtDifficulty: soal.irtDifficulty,
+    irtDiscrimination: soal.irtDiscrimination,
+    irtGuessing: soal.irtGuessing,
+    irtLastCalculated: soal.irtLastCalculated,
+    pembahasan: soal.pembahasan as Pembahasan | null,
+    pilihanJawaban: soal.pilihanJawaban.map((p) => ({
+      id: p.id,
+      soalId: p.soalId,
+      label: p.label as PilihanJawaban["label"],
+      konten: p.konten,
+      kontenHtml: p.kontenHtml,
+      isCorrect: p.isCorrect,
+      urutan: p.urutan,
+    })),
+  }));
+
   return (
     <div className="w-full bg-surface min-h-[calc(100vh-64px)] pb-20 sm:pb-0">
-      <LatihanSession 
-        soalList={soalList as any} 
-        sesiId={sesi.id} 
+      <LatihanSession
+        soalList={typedSoalList}
+        sesiId={sesi.id}
         userId={user.id}
         mapelNama={sesi.mapel?.nama || "Latihan Bebas"}
       />

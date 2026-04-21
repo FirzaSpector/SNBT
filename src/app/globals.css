@@ -3,9 +3,9 @@
 @import "tailwindcss/utilities";
 
 /* ============================================================
-   GOOGLE FONTS — Plus Jakarta Sans + Inter
+   GOOGLE FONTS — Loaded via next/font in layout.tsx (self-hosted, zero CLS)
+   DO NOT add @import url() here — it causes double-download.
    ============================================================ */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap");
 
 /* ============================================================
    CSS CUSTOM PROPERTIES — Design Tokens SoalSNBT.id
@@ -27,8 +27,8 @@
   --card: #ffffff;
   --border: #e5e7eb;
   --text-primary: #111827;
-  --text-secondary: #6b7280;
-  --text-muted: #9ca3af;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -406,3 +406,34 @@ h1, h2, h3, h4, h5, h6 {
   background-color: var(--btn-color, #4F46E5) !important;
   color: white !important;
 }
+
+/* ============================================================
+   DASHBOARD — Animasi stagger (dipindahkan dari inline style jsx)
+   ============================================================ */
+@keyframes dashSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes dashScaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+@keyframes dashFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.dash-slide { animation: dashSlideUp 0.55s cubic-bezier(.22,1,.36,1) both; }
+.dash-scale { animation: dashScaleIn 0.45s cubic-bezier(.22,1,.36,1) both; }
+.dash-fade  { animation: dashFadeIn 0.5s ease-out both; }
+.dd0 { animation-delay: 0ms;   }
+.dd1 { animation-delay: 60ms;  }
+.dd2 { animation-delay: 120ms; }
+.dd3 { animation-delay: 180ms; }
+.dd4 { animation-delay: 240ms; }
+.dd5 { animation-delay: 300ms; }
+.dd6 { animation-delay: 360ms; }
+.dd7 { animation-delay: 420ms; }
+.dd8 { animation-delay: 480ms; }
+.dd9 { animation-delay: 540ms; }
+.hide-scroll::-webkit-scrollbar { display: none; }
+.hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }

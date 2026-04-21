@@ -36,7 +36,22 @@ const nextConfig = {
   },
   experimental: {
     serverComponentsExternalPackages: ["@prisma/client", "prisma"],
-    optimizePackageImports: ["lucide-react", "date-fns", "framer-motion"],
+    optimizePackageImports: [
+      "lucide-react",
+      "date-fns",
+      "framer-motion",
+      "d3",
+      "katex",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-toast",
+      "@radix-ui/react-tooltip",
+      "@radix-ui/react-select",
+      "@radix-ui/react-avatar",
+      "@radix-ui/react-progress",
+      "@radix-ui/react-alert-dialog",
+    ],
   },
 };
 
