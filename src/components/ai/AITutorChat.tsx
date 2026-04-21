@@ -13,7 +13,7 @@ interface Message {
 export function AITutorChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Halo! Aku Kak SNBT, AI tutor personal kamu. Ada materi atau soal yang bikin bingung hari ini?" }
+    { role: "assistant", content: "Halo cik! Aku Kak SNBT, AI tutor personal kamu. Ada materi atau soal yang bikin bingung hari ini?" }
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -32,7 +32,7 @@ export function AITutorChat() {
 
     const userMessageContent = input.trim();
     setInput("");
-    
+
     const newMessages: Message[] = [
       ...messages,
       { role: "user", content: userMessageContent }
@@ -79,14 +79,14 @@ export function AITutorChat() {
                 return updated;
               });
             } catch (err) {
-               // ignore parse error for incomplete chunks
+              // ignore parse error for incomplete chunks
             }
           }
         }
       }
     } catch (error) {
       console.error(error);
-      setMessages(prev => [...prev, { role: "assistant", content: "Maaf ya, Kakak lagi agak sibuk nih (gangguan server). Coba tanya lagi nanti ya! 😢" }]);
+      setMessages(prev => [...prev, { role: "assistant", content: "Maaf ya, Kakak lagi agak sibuk nih (belum bayar API). Coba tanya lagi nanti ya! 😢" }]);
     } finally {
       setIsTyping(false);
     }
@@ -133,14 +133,14 @@ export function AITutorChat() {
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                 <button 
+                <button
                   onClick={() => setMessages([{ role: "assistant", content: "Halo! Aku Kak SNBT, AI tutor personal kamu. Ada materi atau soal yang bikin bingung hari ini?" }])}
                   className="p-1.5 hover:bg-white/20 rounded-lg transition-colors cursor-pointer"
                   title="Bersihkan Obrolan"
                 >
                   <MinusCircle className="w-4 h-4 text-white/80" />
                 </button>
-                <button 
+                <button
                   onClick={() => setIsOpen(false)}
                   className="p-1.5 hover:bg-white/20 rounded-lg transition-colors"
                 >
@@ -150,13 +150,13 @@ export function AITutorChat() {
             </div>
 
             {/* Chat Area */}
-            <div 
+            <div
               ref={scrollRef}
               className="flex-1 overflow-y-auto p-4 space-y-4 bg-surface/50"
             >
               {messages.map((msg, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className={cn(
                     "flex gap-3 max-w-[85%]",
                     msg.role === "user" ? "ml-auto flex-row-reverse" : ""
@@ -170,15 +170,15 @@ export function AITutorChat() {
                   </div>
                   <div className={cn(
                     "p-3 rounded-2xl text-sm leading-relaxed",
-                    msg.role === "user" 
-                      ? "bg-primary text-white rounded-tr-none" 
+                    msg.role === "user"
+                      ? "bg-primary text-white rounded-tr-none"
                       : "bg-white border border-border text-text-primary rounded-tl-none shadow-sm"
                   )}>
                     {msg.content}
                   </div>
                 </div>
               ))}
-              
+
               {isTyping && (
                 <div className="flex gap-3 max-w-[85%]">
                   <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0 mt-1">
@@ -192,7 +192,7 @@ export function AITutorChat() {
             </div>
 
             {/* Input Area */}
-            <form 
+            <form
               onSubmit={sendMessage}
               className="p-3 bg-card border-t border-border flex items-center gap-2 flex-shrink-0"
             >

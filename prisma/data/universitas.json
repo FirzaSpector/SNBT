@@ -1,0 +1,554 @@
+[
+  {
+    "kode": "USK",
+    "nama": "Universitas Syiah Kuala",
+    "singkatan": "USK",
+    "kota": "Banda Aceh"
+  },
+  {
+    "kode": "UNIMAL",
+    "nama": "Universitas Malikussaleh",
+    "singkatan": "Unimal",
+    "kota": "Aceh Utara"
+  },
+  {
+    "kode": "USU",
+    "nama": "Universitas Sumatera Utara",
+    "singkatan": "USU",
+    "kota": "Medan"
+  },
+  {
+    "kode": "UNIMED",
+    "nama": "Universitas Negeri Medan",
+    "singkatan": "Unimed",
+    "kota": "Medan"
+  },
+  {
+    "kode": "UNAND",
+    "nama": "Universitas Andalas",
+    "singkatan": "Unand",
+    "kota": "Padang"
+  },
+  {
+    "kode": "UNP",
+    "nama": "Universitas Negeri Padang",
+    "singkatan": "UNP",
+    "kota": "Padang"
+  },
+  {
+    "kode": "UNRI",
+    "nama": "Universitas Riau",
+    "singkatan": "Unri",
+    "kota": "Pekanbaru"
+  },
+  {
+    "kode": "UNJA",
+    "nama": "Universitas Jambi",
+    "singkatan": "Unja",
+    "kota": "Jambi"
+  },
+  {
+    "kode": "UNIB",
+    "nama": "Universitas Bengkulu",
+    "singkatan": "Unib",
+    "kota": "Bengkulu"
+  },
+  {
+    "kode": "UNSRI",
+    "nama": "Universitas Sriwijaya",
+    "singkatan": "Unsri",
+    "kota": "Palembang"
+  },
+  {
+    "kode": "UNILA",
+    "nama": "Universitas Lampung",
+    "singkatan": "Unila",
+    "kota": "Bandar Lampung"
+  },
+  {
+    "kode": "UNTIRTA",
+    "nama": "Universitas Sultan Ageng Tirtayasa",
+    "singkatan": "Untirta",
+    "kota": "Serang"
+  },
+  {
+    "kode": "UI",
+    "nama": "Universitas Indonesia",
+    "singkatan": "UI",
+    "kota": "Depok"
+  },
+  {
+    "kode": "UNJ",
+    "nama": "Universitas Negeri Jakarta",
+    "singkatan": "UNJ",
+    "kota": "Jakarta"
+  },
+  {
+    "kode": "UPNVJ",
+    "nama": "UPN Veteran Jakarta",
+    "singkatan": "UPNVJ",
+    "kota": "Jakarta"
+  },
+  {
+    "kode": "IPB",
+    "nama": "Institut Pertanian Bogor",
+    "singkatan": "IPB",
+    "kota": "Bogor"
+  },
+  {
+    "kode": "ITB",
+    "nama": "Institut Teknologi Bandung",
+    "singkatan": "ITB",
+    "kota": "Bandung"
+  },
+  {
+    "kode": "UNPAD",
+    "nama": "Universitas Padjadjaran",
+    "singkatan": "Unpad",
+    "kota": "Bandung"
+  },
+  {
+    "kode": "UPI",
+    "nama": "Universitas Pendidikan Indonesia",
+    "singkatan": "UPI",
+    "kota": "Bandung"
+  },
+  {
+    "kode": "UNSOED",
+    "nama": "Universitas Jenderal Soedirman",
+    "singkatan": "Unsoed",
+    "kota": "Purwokerto"
+  },
+  {
+    "kode": "UNTIDAR",
+    "nama": "Universitas Tidar",
+    "singkatan": "Untidar",
+    "kota": "Magelang"
+  },
+  {
+    "kode": "UNS",
+    "nama": "Universitas Sebelas Maret",
+    "singkatan": "UNS",
+    "kota": "Surakarta"
+  },
+  {
+    "kode": "UNDIP",
+    "nama": "Universitas Diponegoro",
+    "singkatan": "Undip",
+    "kota": "Semarang"
+  },
+  {
+    "kode": "UNNES",
+    "nama": "Universitas Negeri Semarang",
+    "singkatan": "Unnes",
+    "kota": "Semarang"
+  },
+  {
+    "kode": "UGM",
+    "nama": "Universitas Gadjah Mada",
+    "singkatan": "UGM",
+    "kota": "Yogyakarta"
+  },
+  {
+    "kode": "UNY",
+    "nama": "Universitas Negeri Yogyakarta",
+    "singkatan": "UNY",
+    "kota": "Yogyakarta"
+  },
+  {
+    "kode": "UPNVY",
+    "nama": "UPN Veteran Yogyakarta",
+    "singkatan": "UPNVY",
+    "kota": "Sleman"
+  },
+  {
+    "kode": "UB",
+    "nama": "Universitas Brawijaya",
+    "singkatan": "UB",
+    "kota": "Malang"
+  },
+  {
+    "kode": "UM",
+    "nama": "Universitas Negeri Malang",
+    "singkatan": "UM",
+    "kota": "Malang"
+  },
+  {
+    "kode": "UNEJ",
+    "nama": "Universitas Jember",
+    "singkatan": "Unej",
+    "kota": "Jember"
+  },
+  {
+    "kode": "UNAIR",
+    "nama": "Universitas Airlangga",
+    "singkatan": "Unair",
+    "kota": "Surabaya"
+  },
+  {
+    "kode": "ITS",
+    "nama": "Institut Teknologi Sepuluh Nopember",
+    "singkatan": "ITS",
+    "kota": "Surabaya"
+  },
+  {
+    "kode": "UNESA",
+    "nama": "Universitas Negeri Surabaya",
+    "singkatan": "Unesa",
+    "kota": "Surabaya"
+  },
+  {
+    "kode": "UPNVJT",
+    "nama": "UPN Veteran Jawa Timur",
+    "singkatan": "UPNVJT",
+    "kota": "Surabaya"
+  },
+  {
+    "kode": "UTM",
+    "nama": "Universitas Trunojoyo Madura",
+    "singkatan": "UTM",
+    "kota": "Bangkalan"
+  },
+  {
+    "kode": "UNUD",
+    "nama": "Universitas Udayana",
+    "singkatan": "Unud",
+    "kota": "Denpasar"
+  },
+  {
+    "kode": "UNDIKSHA",
+    "nama": "Universitas Pendidikan Ganesha",
+    "singkatan": "Undiksha",
+    "kota": "Singaraja"
+  },
+  {
+    "kode": "UNRAM",
+    "nama": "Universitas Mataram",
+    "singkatan": "Unram",
+    "kota": "Mataram"
+  },
+  {
+    "kode": "UNDANA",
+    "nama": "Universitas Nusa Cendana",
+    "singkatan": "Undana",
+    "kota": "Kupang"
+  },
+  {
+    "kode": "UNTAN",
+    "nama": "Universitas Tanjungpura",
+    "singkatan": "Untan",
+    "kota": "Pontianak"
+  },
+  {
+    "kode": "UPR",
+    "nama": "Universitas Palangka Raya",
+    "singkatan": "UPR",
+    "kota": "Palangka Raya"
+  },
+  {
+    "kode": "ULM",
+    "nama": "Universitas Lambung Mangkurat",
+    "singkatan": "ULM",
+    "kota": "Banjarmasin"
+  },
+  {
+    "kode": "UNMUL",
+    "nama": "Universitas Mulawarman",
+    "singkatan": "Unmul",
+    "kota": "Samarinda"
+  },
+  {
+    "kode": "UBT",
+    "nama": "Universitas Borneo Tarakan",
+    "singkatan": "UBT",
+    "kota": "Tarakan"
+  },
+  {
+    "kode": "UNHAS",
+    "nama": "Universitas Hasanuddin",
+    "singkatan": "Unhas",
+    "kota": "Makassar"
+  },
+  {
+    "kode": "UNM",
+    "nama": "Universitas Negeri Makassar",
+    "singkatan": "UNM",
+    "kota": "Makassar"
+  },
+  {
+    "kode": "UNSRAT",
+    "nama": "Universitas Sam Ratulangi",
+    "singkatan": "Unsrat",
+    "kota": "Manado"
+  },
+  {
+    "kode": "UNIMA",
+    "nama": "Universitas Negeri Manado",
+    "singkatan": "Unima",
+    "kota": "Minahasa"
+  },
+  {
+    "kode": "UNTAD",
+    "nama": "Universitas Tadulako",
+    "singkatan": "Untad",
+    "kota": "Palu"
+  },
+  {
+    "kode": "UHO",
+    "nama": "Universitas Halu Oleo",
+    "singkatan": "UHO",
+    "kota": "Kendari"
+  },
+  {
+    "kode": "UNG",
+    "nama": "Universitas Negeri Gorontalo",
+    "singkatan": "UNG",
+    "kota": "Gorontalo"
+  },
+  {
+    "kode": "UNPATTI",
+    "nama": "Universitas Pattimura",
+    "singkatan": "Unpatti",
+    "kota": "Ambon"
+  },
+  {
+    "kode": "UNKHAIR",
+    "nama": "Universitas Khairun",
+    "singkatan": "Unkhair",
+    "kota": "Ternate"
+  },
+  {
+    "kode": "UNCEN",
+    "nama": "Universitas Cenderawasih",
+    "singkatan": "Uncen",
+    "kota": "Jayapura"
+  },
+  {
+    "kode": "UNIPA",
+    "nama": "Universitas Papua",
+    "singkatan": "Unipa",
+    "kota": "Manokwari"
+  },
+  {
+    "kode": "MUSAMUS",
+    "nama": "Universitas Musamus",
+    "singkatan": "Unmus",
+    "kota": "Merauke"
+  },
+  {
+    "kode": "ITERA",
+    "nama": "Institut Teknologi Sumatera",
+    "singkatan": "Itera",
+    "kota": "Lampung Selatan"
+  },
+  {
+    "kode": "ITK",
+    "nama": "Institut Teknologi Kalimantan",
+    "singkatan": "ITK",
+    "kota": "Balikpapan"
+  },
+  {
+    "kode": "ISI-YK",
+    "nama": "Institut Seni Indonesia Yogyakarta",
+    "singkatan": "ISI Yogyakarta",
+    "kota": "Bantul"
+  },
+  {
+    "kode": "ISI-SKA",
+    "nama": "Institut Seni Indonesia Surakarta",
+    "singkatan": "ISI Surakarta",
+    "kota": "Surakarta"
+  },
+  {
+    "kode": "ISI-DPS",
+    "nama": "Institut Seni Indonesia Denpasar",
+    "singkatan": "ISI Denpasar",
+    "kota": "Denpasar"
+  },
+  {
+    "kode": "ISBI-BDG",
+    "nama": "Institut Seni Budaya Indonesia Bandung",
+    "singkatan": "ISBI Bandung",
+    "kota": "Bandung"
+  },
+  {
+    "kode": "POLMAN",
+    "nama": "Politeknik Manufaktur Bandung",
+    "singkatan": "POLMAN",
+    "kota": "Bandung"
+  },
+  {
+    "kode": "PNJ",
+    "nama": "Politeknik Negeri Jakarta",
+    "singkatan": "PNJ",
+    "kota": "Depok"
+  },
+  {
+    "kode": "POLMED",
+    "nama": "Politeknik Negeri Medan",
+    "singkatan": "POLMED",
+    "kota": "Medan"
+  },
+  {
+    "kode": "POLBAN",
+    "nama": "Politeknik Negeri Bandung",
+    "singkatan": "POLBAN",
+    "kota": "Bandung"
+  },
+  {
+    "kode": "POLINES",
+    "nama": "Politeknik Negeri Semarang",
+    "singkatan": "POLINES",
+    "kota": "Semarang"
+  },
+  {
+    "kode": "POLSRI",
+    "nama": "Politeknik Negeri Sriwijaya",
+    "singkatan": "POLSRI",
+    "kota": "Palembang"
+  },
+  {
+    "kode": "POLINELA",
+    "nama": "Politeknik Negeri Lampung",
+    "singkatan": "POLINELA",
+    "kota": "Bandar Lampung"
+  },
+  {
+    "kode": "POLNAM",
+    "nama": "Politeknik Negeri Ambon",
+    "singkatan": "POLNAM",
+    "kota": "Ambon"
+  },
+  {
+    "kode": "PNP",
+    "nama": "Politeknik Negeri Padang",
+    "singkatan": "PNP",
+    "kota": "Padang"
+  },
+  {
+    "kode": "PNB",
+    "nama": "Politeknik Negeri Bali",
+    "singkatan": "PNB",
+    "kota": "Badung"
+  },
+  {
+    "kode": "POLNEP",
+    "nama": "Politeknik Negeri Pontianak",
+    "singkatan": "POLNEP",
+    "kota": "Pontianak"
+  },
+  {
+    "kode": "PNUP",
+    "nama": "Politeknik Negeri Ujung Pandang",
+    "singkatan": "PNUP",
+    "kota": "Makassar"
+  },
+  {
+    "kode": "POLIMDO",
+    "nama": "Politeknik Negeri Manado",
+    "singkatan": "POLIMDO",
+    "kota": "Manado"
+  },
+  {
+    "kode": "PPNS",
+    "nama": "Politeknik Perkapalan Negeri Surabaya",
+    "singkatan": "PPNS",
+    "kota": "Surabaya"
+  },
+  {
+    "kode": "POLIBAN",
+    "nama": "Politeknik Negeri Banjarmasin",
+    "singkatan": "POLIBAN",
+    "kota": "Banjarmasin"
+  },
+  {
+    "kode": "PNL",
+    "nama": "Politeknik Negeri Lhokseumawe",
+    "singkatan": "PNL",
+    "kota": "Lhokseumawe"
+  },
+  {
+    "kode": "PNK",
+    "nama": "Politeknik Negeri Kupang",
+    "singkatan": "PNK",
+    "kota": "Kupang"
+  },
+  {
+    "kode": "PENS",
+    "nama": "Politeknik Elektronika Negeri Surabaya",
+    "singkatan": "PENS",
+    "kota": "Surabaya"
+  },
+  {
+    "kode": "POLIJE",
+    "nama": "Politeknik Negeri Jember",
+    "singkatan": "POLIJE",
+    "kota": "Jember"
+  },
+  {
+    "kode": "POLINEMA",
+    "nama": "Politeknik Negeri Malang",
+    "singkatan": "POLINEMA",
+    "kota": "Malang"
+  },
+  {
+    "kode": "POLNES",
+    "nama": "Politeknik Negeri Samarinda",
+    "singkatan": "POLNES",
+    "kota": "Samarinda"
+  },
+  {
+    "kode": "POLIBATAM",
+    "nama": "Politeknik Negeri Batam",
+    "singkatan": "POLIBATAM",
+    "kota": "Batam"
+  },
+  {
+    "kode": "UIN-JKT",
+    "nama": "UIN Syarif Hidayatullah Jakarta",
+    "singkatan": "UIN Jakarta",
+    "kota": "Jakarta"
+  },
+  {
+    "kode": "UIN-SUKA",
+    "nama": "UIN Sunan Kalijaga",
+    "singkatan": "UIN Suka",
+    "kota": "Yogyakarta"
+  },
+  {
+    "kode": "UIN-SGD",
+    "nama": "UIN Sunan Gunung Djati",
+    "singkatan": "UIN Bandung",
+    "kota": "Bandung"
+  },
+  {
+    "kode": "UIN-SA",
+    "nama": "UIN Sunan Ampel",
+    "singkatan": "UINSA",
+    "kota": "Surabaya"
+  },
+  {
+    "kode": "UIN-MALANG",
+    "nama": "UIN Maulana Malik Ibrahim",
+    "singkatan": "UIN Malang",
+    "kota": "Malang"
+  },
+  {
+    "kode": "UIN-WALI",
+    "nama": "UIN Walisongo",
+    "singkatan": "UIN Walisongo",
+    "kota": "Semarang"
+  },
+  {
+    "kode": "UIN-AM",
+    "nama": "UIN Alauddin",
+    "singkatan": "UIN Alauddin",
+    "kota": "Makassar"
+  },
+  {
+    "kode": "UIN-SU",
+    "nama": "UIN Sumatera Utara",
+    "singkatan": "UINSU",
+    "kota": "Medan"
+  }
+]

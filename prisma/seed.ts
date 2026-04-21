@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import fs from "fs";
+import path from "path";
 
 const prisma = new PrismaClient();
 
@@ -443,139 +445,12 @@ async function main() {
   // ============================================================
   console.log("🏛️  Seeding Universitas PTN...");
 
-  const univData = [
-    // UNIVERSITAS (PULAU SUMATERA)
-    { kode: "USK", nama: "Universitas Syiah Kuala", singkatan: "USK", kota: "Banda Aceh" },
-    { kode: "UNIMAL", nama: "Universitas Malikussaleh", singkatan: "Unimal", kota: "Aceh Utara" },
-    { kode: "USU", nama: "Universitas Sumatera Utara", singkatan: "USU", kota: "Medan" },
-    { kode: "UNIMED", nama: "Universitas Negeri Medan", singkatan: "Unimed", kota: "Medan" },
-    { kode: "UNAND", nama: "Universitas Andalas", singkatan: "Unand", kota: "Padang" },
-    { kode: "UNP", nama: "Universitas Negeri Padang", singkatan: "UNP", kota: "Padang" },
-    { kode: "UNRI", nama: "Universitas Riau", singkatan: "Unri", kota: "Pekanbaru" },
-    { kode: "UNJA", nama: "Universitas Jambi", singkatan: "Unja", kota: "Jambi" },
-    { kode: "UNIB", nama: "Universitas Bengkulu", singkatan: "Unib", kota: "Bengkulu" },
-    { kode: "UNSRI", nama: "Universitas Sriwijaya", singkatan: "Unsri", kota: "Palembang" },
-    { kode: "UNILA", nama: "Universitas Lampung", singkatan: "Unila", kota: "Bandar Lampung" },
-    
-    // UNIVERSITAS (PULAU JAWA)
-    { kode: "UNTIRTA", nama: "Universitas Sultan Ageng Tirtayasa", singkatan: "Untirta", kota: "Serang" },
-    { kode: "UI", nama: "Universitas Indonesia", singkatan: "UI", kota: "Depok" },
-    { kode: "UNJ", nama: "Universitas Negeri Jakarta", singkatan: "UNJ", kota: "Jakarta" },
-    { kode: "UPNVJ", nama: "UPN Veteran Jakarta", singkatan: "UPNVJ", kota: "Jakarta" },
-    { kode: "IPB", nama: "Institut Pertanian Bogor", singkatan: "IPB", kota: "Bogor" },
-    { kode: "ITB", nama: "Institut Teknologi Bandung", singkatan: "ITB", kota: "Bandung" },
-    { kode: "UNPAD", nama: "Universitas Padjadjaran", singkatan: "Unpad", kota: "Bandung" },
-    { kode: "UPI", nama: "Universitas Pendidikan Indonesia", singkatan: "UPI", kota: "Bandung" },
-    { kode: "UNSOED", nama: "Universitas Jenderal Soedirman", singkatan: "Unsoed", kota: "Purwokerto" },
-    { kode: "UNTIDAR", nama: "Universitas Tidar", singkatan: "Untidar", kota: "Magelang" },
-    { kode: "UNS", nama: "Universitas Sebelas Maret", singkatan: "UNS", kota: "Surakarta" },
-    { kode: "UNDIP", nama: "Universitas Diponegoro", singkatan: "Undip", kota: "Semarang" },
-    { kode: "UNNES", nama: "Universitas Negeri Semarang", singkatan: "Unnes", kota: "Semarang" },
-    { kode: "UGM", nama: "Universitas Gadjah Mada", singkatan: "UGM", kota: "Yogyakarta" },
-    { kode: "UNY", nama: "Universitas Negeri Yogyakarta", singkatan: "UNY", kota: "Yogyakarta" },
-    { kode: "UPNVY", nama: "UPN Veteran Yogyakarta", singkatan: "UPNVY", kota: "Sleman" },
-    { kode: "UB", nama: "Universitas Brawijaya", singkatan: "UB", kota: "Malang" },
-    { kode: "UM", nama: "Universitas Negeri Malang", singkatan: "UM", kota: "Malang" },
-    { kode: "UNEJ", nama: "Universitas Jember", singkatan: "Unej", kota: "Jember" },
-    { kode: "UNAIR", nama: "Universitas Airlangga", singkatan: "Unair", kota: "Surabaya" },
-    { kode: "ITS", nama: "Institut Teknologi Sepuluh Nopember", singkatan: "ITS", kota: "Surabaya" },
-    { kode: "UNESA", nama: "Universitas Negeri Surabaya", singkatan: "Unesa", kota: "Surabaya" },
-    { kode: "UPNVJT", nama: "UPN Veteran Jawa Timur", singkatan: "UPNVJT", kota: "Surabaya" },
-    { kode: "UTM", nama: "Universitas Trunojoyo Madura", singkatan: "UTM", kota: "Bangkalan" },
+  // Force clean slate for Prodi to avoid duplicates/deprecated data from previous seeds
+  await prisma.prodiPTN.deleteMany();
 
-    // UNIVERSITAS (BALI & NUSA TENGGARA)
-    { kode: "UNUD", nama: "Universitas Udayana", singkatan: "Unud", kota: "Denpasar" },
-    { kode: "UNDIKSHA", nama: "Universitas Pendidikan Ganesha", singkatan: "Undiksha", kota: "Singaraja" },
-    { kode: "UNRAM", nama: "Universitas Mataram", singkatan: "Unram", kota: "Mataram" },
-    { kode: "UNDANA", nama: "Universitas Nusa Cendana", singkatan: "Undana", kota: "Kupang" },
-
-    // UNIVERSITAS (KALIMANTAN)
-    { kode: "UNTAN", nama: "Universitas Tanjungpura", singkatan: "Untan", kota: "Pontianak" },
-    { kode: "UPR", nama: "Universitas Palangka Raya", singkatan: "UPR", kota: "Palangka Raya" },
-    { kode: "ULM", nama: "Universitas Lambung Mangkurat", singkatan: "ULM", kota: "Banjarmasin" },
-    { kode: "UNMUL", nama: "Universitas Mulawarman", singkatan: "Unmul", kota: "Samarinda" },
-    { kode: "UBT", nama: "Universitas Borneo Tarakan", singkatan: "UBT", kota: "Tarakan" },
-
-    // UNIVERSITAS (SULAWESI)
-    { kode: "UNHAS", nama: "Universitas Hasanuddin", singkatan: "Unhas", kota: "Makassar" },
-    { kode: "UNM", nama: "Universitas Negeri Makassar", singkatan: "UNM", kota: "Makassar" },
-    { kode: "UNSRAT", nama: "Universitas Sam Ratulangi", singkatan: "Unsrat", kota: "Manado" },
-    { kode: "UNIMA", nama: "Universitas Negeri Manado", singkatan: "Unima", kota: "Minahasa" },
-    { kode: "UNTAD", nama: "Universitas Tadulako", singkatan: "Untad", kota: "Palu" },
-    { kode: "UHO", nama: "Universitas Halu Oleo", singkatan: "UHO", kota: "Kendari" },
-    { kode: "UNG", nama: "Universitas Negeri Gorontalo", singkatan: "UNG", kota: "Gorontalo" },
-
-    // UNIVERSITAS (MALUKU & PAPUA)
-    { kode: "UNPATTI", nama: "Universitas Pattimura", singkatan: "Unpatti", kota: "Ambon" },
-    { kode: "UNKHAIR", nama: "Universitas Khairun", singkatan: "Unkhair", kota: "Ternate" },
-    { kode: "UNCEN", nama: "Universitas Cenderawasih", singkatan: "Uncen", kota: "Jayapura" },
-    { kode: "UNIPA", nama: "Universitas Papua", singkatan: "Unipa", kota: "Manokwari" },
-    { kode: "MUSAMUS", nama: "Universitas Musamus", singkatan: "Unmus", kota: "Merauke" },
-
-    // INSTITUT
-    { kode: "ITERA", nama: "Institut Teknologi Sumatera", singkatan: "Itera", kota: "Lampung Selatan" },
-    { kode: "ITK", nama: "Institut Teknologi Kalimantan", singkatan: "ITK", kota: "Balikpapan" },
-    { kode: "ISI-YK", nama: "Institut Seni Indonesia Yogyakarta", singkatan: "ISI Yogyakarta", kota: "Bantul" },
-    { kode: "ISI-SKA", nama: "Institut Seni Indonesia Surakarta", singkatan: "ISI Surakarta", kota: "Surakarta" },
-    { kode: "ISI-DPS", nama: "Institut Seni Indonesia Denpasar", singkatan: "ISI Denpasar", kota: "Denpasar" },
-    { kode: "ISBI-BDG", nama: "Institut Seni Budaya Indonesia Bandung", singkatan: "ISBI Bandung", kota: "Bandung" },
-
-    // POLITEKNIK
-    { kode: "POLMAN", nama: "Politeknik Manufaktur Bandung", singkatan: "POLMAN", kota: "Bandung" },
-    { kode: "PNJ", nama: "Politeknik Negeri Jakarta", singkatan: "PNJ", kota: "Depok" },
-    { kode: "POLMED", nama: "Politeknik Negeri Medan", singkatan: "POLMED", kota: "Medan" },
-    { kode: "POLBAN", nama: "Politeknik Negeri Bandung", singkatan: "POLBAN", kota: "Bandung" },
-    { kode: "POLINES", nama: "Politeknik Negeri Semarang", singkatan: "POLINES", kota: "Semarang" },
-    { kode: "POLSRI", nama: "Politeknik Negeri Sriwijaya", singkatan: "POLSRI", kota: "Palembang" },
-    { kode: "POLINELA", nama: "Politeknik Negeri Lampung", singkatan: "POLINELA", kota: "Bandar Lampung" },
-    { kode: "POLNAM", nama: "Politeknik Negeri Ambon", singkatan: "POLNAM", kota: "Ambon" },
-    { kode: "PNP", nama: "Politeknik Negeri Padang", singkatan: "PNP", kota: "Padang" },
-    { kode: "PNB", nama: "Politeknik Negeri Bali", singkatan: "PNB", kota: "Badung" },
-    { kode: "POLNEP", nama: "Politeknik Negeri Pontianak", singkatan: "POLNEP", kota: "Pontianak" },
-    { kode: "PNUP", nama: "Politeknik Negeri Ujung Pandang", singkatan: "PNUP", kota: "Makassar" },
-    { kode: "POLIMDO", nama: "Politeknik Negeri Manado", singkatan: "POLIMDO", kota: "Manado" },
-    { kode: "PPNS", nama: "Politeknik Perkapalan Negeri Surabaya", singkatan: "PPNS", kota: "Surabaya" },
-    { kode: "POLIBAN", nama: "Politeknik Negeri Banjarmasin", singkatan: "POLIBAN", kota: "Banjarmasin" },
-    { kode: "PNL", nama: "Politeknik Negeri Lhokseumawe", singkatan: "PNL", kota: "Lhokseumawe" },
-    { kode: "PNK", nama: "Politeknik Negeri Kupang", singkatan: "PNK", kota: "Kupang" },
-    { kode: "PENS", nama: "Politeknik Elektronika Negeri Surabaya", singkatan: "PENS", kota: "Surabaya" },
-    { kode: "POLIJE", nama: "Politeknik Negeri Jember", singkatan: "POLIJE", kota: "Jember" },
-    { kode: "PPNP", nama: "Politeknik Pertanian Negeri Pangkajene Kepulauan", singkatan: "PPNP", kota: "Pangkajene" },
-    { kode: "PPNK", nama: "Politeknik Pertanian Negeri Kupang", singkatan: "PPNK", kota: "Kupang" },
-    { kode: "POLIKANT", nama: "Politeknik Perikanan Negeri Tual", singkatan: "POLIKANT", kota: "Tual" },
-    { kode: "POLINEMA", nama: "Politeknik Negeri Malang", singkatan: "POLINEMA", kota: "Malang" },
-    { kode: "POLITANI-SMD", nama: "Politeknik Pertanian Negeri Samarinda", singkatan: "POLITANI Samarinda", kota: "Samarinda" },
-    { kode: "PPNP-PYK", nama: "Politeknik Pertanian Negeri Payakumbuh", singkatan: "PPNP", kota: "Payakumbuh" },
-    { kode: "POLNES", nama: "Politeknik Negeri Samarinda", singkatan: "POLNES", kota: "Samarinda" },
-    { kode: "POLIMEDIA", nama: "Politeknik Negeri Media Kreatif", singkatan: "POLIMEDIA", kota: "Jakarta" },
-    { kode: "POLMANBABEL", nama: "Politeknik Manufaktur Negeri Bangka Belitung", singkatan: "POLMANBABEL", kota: "Bangka" },
-    { kode: "POLIBATAM", nama: "Politeknik Negeri Batam", singkatan: "POLIBATAM", kota: "Batam" },
-    { kode: "POLNUSTAR", nama: "Politeknik Negeri Nusa Utara", singkatan: "POLNUSTAR", kota: "Sangihe" },
-    { kode: "POLBENG", nama: "Politeknik Negeri Bengkalis", singkatan: "POLBENG", kota: "Bengkalis" },
-    { kode: "POLTEKBA", nama: "Politeknik Negeri Balikpapan", singkatan: "POLTEKBA", kota: "Balikpapan" },
-    { kode: "POLTERA", nama: "Politeknik Negeri Madura", singkatan: "POLTERA", kota: "Sampang" },
-    { kode: "POLIMARIN", nama: "Politeknik Maritim Negeri Indonesia", singkatan: "POLIMARIN", kota: "Semarang" },
-    { kode: "POLIWANGI", nama: "Politeknik Negeri Banyuwangi", singkatan: "POLIWANGI", kota: "Banyuwangi" },
-    { kode: "PNM", nama: "Politeknik Negeri Madiun", singkatan: "PNM", kota: "Madiun" },
-    { kode: "POLINEF", nama: "Politeknik Negeri Fakfak", singkatan: "POLINEF", kota: "Fakfak" },
-    { kode: "POLTESA", nama: "Politeknik Negeri Sambas", singkatan: "POLTESA", kota: "Sambas" },
-    { kode: "POLITALA", nama: "Politeknik Negeri Tanah Laut", singkatan: "POLITALA", kota: "Pelaihari" },
-    { kode: "POLSUB", nama: "Politeknik Negeri Subang", singkatan: "POLSUB", kota: "Subang" },
-    { kode: "POLITAP", nama: "Politeknik Negeri Ketapang", singkatan: "POLITAP", kota: "Ketapang" },
-    { kode: "PNC", nama: "Politeknik Negeri Cilacap", singkatan: "PNC", kota: "Cilacap" },
-    { kode: "POLINDRA", nama: "Politeknik Negeri Indramayu", singkatan: "POLINDRA", kota: "Indramayu" },
-    { kode: "PNN", nama: "Politeknik Negeri Nunukan", singkatan: "PNN", kota: "Nunukan" },
-
-    // UIN (Universitas Islam Negeri di bawah Kemenag yang masuk SNBT)
-    { kode: "UIN-JKT", nama: "UIN Syarif Hidayatullah Jakarta", singkatan: "UIN Jakarta", kota: "Jakarta" },
-    { kode: "UIN-SUKA", nama: "UIN Sunan Kalijaga", singkatan: "UIN Suka", kota: "Yogyakarta" },
-    { kode: "UIN-SGD", nama: "UIN Sunan Gunung Djati", singkatan: "UIN Bandung", kota: "Bandung" },
-    { kode: "UIN-SA", nama: "UIN Sunan Ampel", singkatan: "UINSA", kota: "Surabaya" },
-    { kode: "UIN-MALANG", nama: "UIN Maulana Malik Ibrahim", singkatan: "UIN Malang", kota: "Malang" },
-    { kode: "UIN-WALI", nama: "UIN Walisongo", singkatan: "UIN Walisongo", kota: "Semarang" },
-    { kode: "UIN-AM", nama: "UIN Alauddin", singkatan: "UIN Alauddin", kota: "Makassar" },
-    { kode: "UIN-SU", nama: "UIN Sumatera Utara", singkatan: "UINSU", kota: "Medan" },
-  ];
+  const univDataPath = path.join(process.cwd(), 'prisma', 'data', 'universitas.json');
+  const univDataRaw = fs.readFileSync(univDataPath, 'utf-8');
+  const univData: { kode: string; nama: string; singkatan: string; kota: string }[] = JSON.parse(univDataRaw);
 
   const univMap: Record<string, number> = {};
   for (const u of univData) {
@@ -592,70 +467,30 @@ async function main() {
   // ============================================================
   console.log("📖 Seeding Program Studi PTN...");
 
-  const prodiData = [
-    // UI
-    { univKode: "UI", kode: "FK-UI", nama: "Kedokteran", rumpun: "SAINTEK", dayaTampung: 150, passingGrade: 750 },
-    { univKode: "UI", kode: "FH-UI", nama: "Ilmu Hukum", rumpun: "SOSHUM", dayaTampung: 300, passingGrade: 680 },
-    { univKode: "UI", kode: "CS-UI", nama: "Ilmu Komputer", rumpun: "SAINTEK", dayaTampung: 100, passingGrade: 720 },
-    { univKode: "UI", kode: "FE-UI", nama: "Akuntansi", rumpun: "SOSHUM", dayaTampung: 120, passingGrade: 700 },
-    { univKode: "UI", kode: "PSI-UI", nama: "Psikologi", rumpun: "SOSHUM", dayaTampung: 100, passingGrade: 690 },
-    // ITB
-    { univKode: "ITB", kode: "STEI", nama: "Teknik Elektro & Informatika", rumpun: "SAINTEK", dayaTampung: 350, passingGrade: 730 },
-    { univKode: "ITB", kode: "FTTM", nama: "Teknik Pertambangan & Perminyakan", rumpun: "SAINTEK", dayaTampung: 120, passingGrade: 680 },
-    { univKode: "ITB", kode: "FITB", nama: "Teknik Geologi", rumpun: "SAINTEK", dayaTampung: 80, passingGrade: 660 },
-    { univKode: "ITB", kode: "SBM", nama: "Manajemen", rumpun: "SOSHUM", dayaTampung: 90, passingGrade: 710 },
-    // UGM
-    { univKode: "UGM", kode: "FK-UGM", nama: "Kedokteran", rumpun: "SAINTEK", dayaTampung: 180, passingGrade: 740 },
-    { univKode: "UGM", kode: "FT-UGM", nama: "Teknik Elektro", rumpun: "SAINTEK", dayaTampung: 100, passingGrade: 690 },
-    { univKode: "UGM", kode: "FEB-UGM", nama: "Manajemen", rumpun: "SOSHUM", dayaTampung: 120, passingGrade: 690 },
-    { univKode: "UGM", kode: "FISIP-UGM", nama: "Ilmu Komunikasi", rumpun: "SOSHUM", dayaTampung: 80, passingGrade: 670 },
-    // ITS
-    { univKode: "ITS", kode: "IF-ITS", nama: "Teknik Informatika", rumpun: "SAINTEK", dayaTampung: 120, passingGrade: 700 },
-    { univKode: "ITS", kode: "TE-ITS", nama: "Teknik Elektro", rumpun: "SAINTEK", dayaTampung: 100, passingGrade: 670 },
-    { univKode: "ITS", kode: "TK-ITS", nama: "Teknik Kimia", rumpun: "SAINTEK", dayaTampung: 100, passingGrade: 650 },
-    // UNAIR
-    { univKode: "UNAIR", kode: "FK-UNAIR", nama: "Kedokteran", rumpun: "SAINTEK", dayaTampung: 160, passingGrade: 730 },
-    { univKode: "UNAIR", kode: "FH-UNAIR", nama: "Ilmu Hukum", rumpun: "SOSHUM", dayaTampung: 200, passingGrade: 650 },
-    { univKode: "UNAIR", kode: "PSI-UNAIR", nama: "Psikologi", rumpun: "SOSHUM", dayaTampung: 80, passingGrade: 660 },
-    // UNDIP
-    { univKode: "UNDIP", kode: "FK-UNDIP", nama: "Kedokteran", rumpun: "SAINTEK", dayaTampung: 160, passingGrade: 720 },
-    { univKode: "UNDIP", kode: "IF-UNDIP", nama: "Informatika", rumpun: "SAINTEK", dayaTampung: 80, passingGrade: 660 },
-    // UNPAD
-    { univKode: "UNPAD", kode: "FK-UNPAD", nama: "Kedokteran", rumpun: "SAINTEK", dayaTampung: 170, passingGrade: 735 },
-    { univKode: "UNPAD", kode: "FH-UNPAD", nama: "Ilmu Hukum", rumpun: "SOSHUM", dayaTampung: 250, passingGrade: 660 },
-    { univKode: "UNPAD", kode: "IKOM-UNPAD", nama: "Ilmu Komunikasi", rumpun: "SOSHUM", dayaTampung: 100, passingGrade: 670 },
-    // UB
-    { univKode: "UB", kode: "FK-UB", nama: "Kedokteran", rumpun: "SAINTEK", dayaTampung: 140, passingGrade: 710 },
-    { univKode: "UB", kode: "IF-UB", nama: "Teknik Informatika", rumpun: "SAINTEK", dayaTampung: 80, passingGrade: 650 },
-    { univKode: "UB", kode: "FH-UB", nama: "Ilmu Hukum", rumpun: "SOSHUM", dayaTampung: 150, passingGrade: 640 },
-    // UNS
-    { univKode: "UNS", kode: "FK-UNS", nama: "Kedokteran", rumpun: "SAINTEK", dayaTampung: 120, passingGrade: 700 },
-    { univKode: "UNS", kode: "IF-UNS", nama: "Informatika", rumpun: "SAINTEK", dayaTampung: 60, passingGrade: 630 },
-    // USU
-    { univKode: "USU", kode: "FK-USU", nama: "Kedokteran", rumpun: "SAINTEK", dayaTampung: 140, passingGrade: 700 },
-    { univKode: "USU", kode: "FH-USU", nama: "Ilmu Hukum", rumpun: "SOSHUM", dayaTampung: 180, passingGrade: 620 },
-    // IPB
-    { univKode: "IPB", kode: "IF-IPB", nama: "Ilmu Komputer", rumpun: "SAINTEK", dayaTampung: 80, passingGrade: 670 },
-    { univKode: "IPB", kode: "TP-IPB", nama: "Teknologi Pangan", rumpun: "SAINTEK", dayaTampung: 60, passingGrade: 640 },
-    // UNHAS
-    { univKode: "UNHAS", kode: "FK-UNHAS", nama: "Kedokteran", rumpun: "SAINTEK", dayaTampung: 150, passingGrade: 710 },
-    { univKode: "UNHAS", kode: "FH-UNHAS", nama: "Ilmu Hukum", rumpun: "SOSHUM", dayaTampung: 200, passingGrade: 620 },
-  ];
+  const prodiDataPath = path.join(process.cwd(), 'prisma', 'data', 'prodi.json');
+  const prodiDataRaw = fs.readFileSync(prodiDataPath, 'utf-8');
+  const prodiData: { univKode: string; kode: string; nama: string; rumpun: string; dayaTampung: number; passingGrade: number }[] = JSON.parse(prodiDataRaw);
 
-  for (const p of prodiData) {
+  const formattedProdiData = prodiData.map(p => {
     const univId = univMap[p.univKode];
-    if (!univId) continue;
-    await prisma.prodiPTN.upsert({
-      where: { univId_kode: { univId, kode: p.kode } },
-      update: {},
-      create: {
-        univId,
-        kode: p.kode,
-        nama: p.nama,
-        rumpun: p.rumpun,
-        dayaTampung: p.dayaTampung,
-        passingGrade: p.passingGrade,
-      },
+    if (!univId) return null;
+    return {
+      univId,
+      kode: p.kode,
+      nama: p.nama,
+      rumpun: p.rumpun,
+      dayaTampung: p.dayaTampung,
+      passingGrade: p.passingGrade,
+    };
+  }).filter(Boolean) as any[];
+
+  // Execute in batches to avoid payload too large, skipped duplicates.
+  const batchSize = 1000;
+  for (let i = 0; i < formattedProdiData.length; i += batchSize) {
+    const batch = formattedProdiData.slice(i, i + batchSize);
+    await prisma.prodiPTN.createMany({
+      data: batch,
+      skipDuplicates: true,
     });
   }
 

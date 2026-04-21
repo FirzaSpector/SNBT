@@ -29,7 +29,7 @@ const getCachedUniversitas = unstable_cache(
       orderBy: { nama: "asc" },
     });
   },
-  ["universitas-prodi-list"],
+  ["universitas-prodi-list-v3"],
   { revalidate: 86400 } // cache for 24 hours
 );
 
